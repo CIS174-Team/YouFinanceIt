@@ -1,12 +1,18 @@
-public class User
-{
-    public int UserID { get; set; }
-    public string Username { get; set; }
-    public string Email { get; set; }
-    public string PasswordHash { get; set; }
-    public DateTime CreatedDate { get; set; }
+using Microsoft.AspNetCore.Identity;
+using System;
+using System.Collections.Generic;
 
-    public ICollection<Account> Accounts { get; set; }
-    public ICollection<Transaction> Transactions { get; set; }
-    public ICollection<Budget> Budgets { get; set; }
+namespace YouFinanceIt.Models
+{
+    public class User : IdentityUser<int>
+    {
+        // do not re-declare UserID, Email, or PasswordHash — they are inherited from IdentityUser<int>
+
+        public DateTime CreatedDate { get; set; }
+
+        public ICollection<Account> Accounts { get; set; } = new List<Account>();
+        public ICollection<Transaction> Transactions { get; set; } = new List<Transaction>();
+        public ICollection<Budget> Budgets { get; set; } = new List<Budget>();
+        public ICollection<Category> Categories { get; set; } = new List<Category>();
+    }
 }

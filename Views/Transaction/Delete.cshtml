@@ -1,0 +1,35 @@
+﻿@model YouFinanceIt.Models.Transaction
+
+@{
+    ViewData["Title"] = "Delete Transaction";
+}
+
+<h2>Delete Transaction</h2>
+
+<h3>Are you sure you want to delete this?</h3>
+
+<div>
+    <h4>Transaction</h4>
+    <dl class="row">
+        <dt class="col-sm-2">Date</dt>
+        <dd class="col-sm-10">@Model.TransactionDate.ToShortDateString()</dd>
+
+        <dt class="col-sm-2">Note</dt>
+        <dd class="col-sm-10">@Model.Description</dd>
+
+        <dt class="col-sm-2">Category</dt>
+        <dd class="col-sm-10">@Model.Category?.CategoryName</dd>
+
+        <dt class="col-sm-2">Amount</dt>
+        <dd class="col-sm-10">@Model.Amount.ToString("C")</dd>
+
+        <dt class="col-sm-2">Account</dt>
+        <dd class="col-sm-10">@Model.Account?.AccountName</dd>
+    </dl>
+
+    <form asp-action="Delete" method="post">
+        <input type="hidden" asp-for="TransactionID" />
+        <button type="submit" class="btn btn-danger">Delete</button> |
+        <a asp-action="Index">Cancel</a>
+    </form>
+</div>

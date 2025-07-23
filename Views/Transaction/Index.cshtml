@@ -1,0 +1,41 @@
+﻿@model IEnumerable<YouFinanceIt.Models.Transaction>
+
+@{
+    ViewData["Title"] = "Transactions";
+}
+
+<h2>Transactions</h2>
+
+<p>
+    <a asp-action="Create" class="btn btn-primary">Add New Transaction</a>
+</p>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Date</th>
+            <th>Note</th>
+            <th>Category</th>
+            <th>Amount</th>
+            <th>Account</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.TransactionDate.ToShortDateString()</td>
+                <td>@item.Description</td>
+                <td>@item.Category?.CategoryName</td>
+                <td>@item.Amount.ToString("C")</td>
+                <td>@item.Account?.AccountName</td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.TransactionID">Edit</a> |
+                    <a asp-action="Details" asp-route-id="@item.TransactionID">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@item.TransactionID">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

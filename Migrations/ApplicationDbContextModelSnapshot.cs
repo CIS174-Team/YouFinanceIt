@@ -10,7 +10,7 @@ using YouFinanceIt.Data;
 
 namespace YouFinanceIt.Migrations
 {
-    [DbContext(typeof(ApplicationDbContext))]
+    [DbContext(typeof(YFIDbContext))]
     partial class ApplicationDbContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)

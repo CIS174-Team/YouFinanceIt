@@ -11,7 +11,7 @@ using YouFinanceIt.Data;
 
 namespace YouFinanceIt.Migrations
 {
-    [DbContext(typeof(ApplicationDbContext))]
+    [DbContext(typeof(YFIDbContext))]
     [Migration("20250712154715_InitialCreate")]
     partial class InitialCreate
     {

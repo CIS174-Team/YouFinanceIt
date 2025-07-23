@@ -1,37 +1,64 @@
-using YouFinanceIt.Data; //Imports data context
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using YouFinanceIt.Data;
+using YouFinanceIt.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+// Add services to the container
 builder.Services.AddControllersWithViews();
 
-// Register the DbContext using the connection string from appsettings.json
-builder.Services.AddDbContext<ApplicationDbContext>(options =>
+// Register DbContext with SQL Server
+builder.Services.AddDbContext<YFIDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
+// Configure Identity with custom User and Role using int as key
+builder.Services.AddIdentity<User, IdentityRole<int>>(options =>
+{
+    options.SignIn.RequireConfirmedAccount = false;
+})
+.AddEntityFrameworkStores<YFIDbContext>()
+.AddDefaultTokenProviders()
+.AddDefaultUI();  // Make sure Identity UI is added
+
+// Configure the application cookie to point to the correct login/logout paths
+builder.Services.ConfigureApplicationCookie(options =>
+{
+    options.LoginPath = "/Identity/Account/Login";
+    options.LogoutPath = "/Identity/Account/Logout";
+    options.AccessDeniedPath = "/Identity/Account/AccessDenied";
+});
+
+// Add Razor Pages for Identity UI
+builder.Services.AddRazorPages();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+// Configure the middleware pipeline
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
+}
+else
+{
+    app.UseDeveloperExceptionPage();
 }
 
 app.UseHttpsRedirection();
+app.UseStaticFiles();
+
 app.UseRouting();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
-app.MapStaticAssets();
-
+// Default route: Dashboard controller
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}")
-    .WithStaticAssets();
+    pattern: "{controller=Dashboard}/{action=Index}/{id?}");
 
+// Map Razor Pages (Identity)
+app.MapRazorPages();
 
 app.Run();

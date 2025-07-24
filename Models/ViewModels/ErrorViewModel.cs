@@ -1,4 +1,4 @@
-namespace YouFinanceIt.Models;
+namespace YouFinanceIt.Models.ViewModels;
 
 public class ErrorViewModel
 {

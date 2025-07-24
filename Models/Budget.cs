@@ -1,3 +1,5 @@
+using YouFinanceIt.Data;
+
 public class Budget
 {
     public int BudgetID { get; set; }
@@ -7,6 +9,6 @@ public class Budget
     public DateTime StartDate { get; set; }
     public DateTime EndDate { get; set; }
 
-    public User User { get; set; }
-    public Category Category { get; set; }
+    public User? User { get; set; }
+    public Category? Category { get; set; }
 }

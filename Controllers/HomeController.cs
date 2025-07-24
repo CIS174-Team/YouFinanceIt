@@ -1,6 +1,7 @@
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using YouFinanceIt.Models;
+using YouFinanceIt.Models.ViewModels;
 
 namespace YouFinanceIt.Controllers;
 

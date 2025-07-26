@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using YouFinanceIt.Data; // Your DbContext namespace
 using YouFinanceIt.Models; // Your ApplicationUser namespace
+using YouFinanceIt.Services; // Added for TransactionService
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -24,6 +25,9 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 // Add Identity services
 builder.Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = false)
     .AddEntityFrameworkStores<ApplicationDbContext>();
+
+// Register your custom services
+builder.Services.AddScoped<ITransactionService, TransactionService>();
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();

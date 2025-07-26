@@ -1,0 +1,31 @@
+﻿@model YouFinanceIt.Data.Transaction
+@{
+    ViewData["Title"] = "Create Transaction";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<form asp-action="Create" method="post">
+    <div class="form-group">
+        <label asp-for="TransactionDate" class="control-label"></label>
+        <input asp-for="TransactionDate" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label asp-for="Description" class="control-label"></label>
+        <input asp-for="Description" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label asp-for="Amount" class="control-label"></label>
+        <input asp-for="Amount" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label asp-for="CategoryID" class="control-label"></label>
+        <input asp-for="CategoryID" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label asp-for="AccountID" class="control-label"></label>
+        <input asp-for="AccountID" class="form-control" />
+    </div>
+    <input type="hidden" asp-for="CreatedDate" value="@DateTime.Now" />
+    <button type="submit" class="btn btn-primary">Create</button>
+</form>

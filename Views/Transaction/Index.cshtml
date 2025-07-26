@@ -1,0 +1,32 @@
+﻿@model List<YouFinanceIt.Data.Transaction>
+@{
+    ViewData["Title"] = "Your Transactions";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<a asp-action="Create" class="btn btn-primary mb-3">Add New Transaction</a>
+
+<table class="table table-bordered table-striped">
+    <thead>
+        <tr>
+            <th>Date</th>
+            <th>Description</th>
+            <th>Amount</th>
+            <th>Category</th>
+            <th>Account</th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach (var t in Model)
+    {
+        <tr>
+            <td>@t.TransactionDate.ToShortDateString()</td>
+            <td>@t.Description</td>
+            <td>@t.Amount.ToString("C")</td>
+            <td>@t.Category?.CategoryName</td>
+            <td>@t.Account?.AccountName</td>
+        </tr>
+    }
+    </tbody>
+</table>

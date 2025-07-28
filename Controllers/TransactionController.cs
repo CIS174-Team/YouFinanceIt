@@ -3,6 +3,7 @@ using YouFinanceIt.Services;
 using System.Threading.Tasks;
 using YouFinanceIt.Data;
 using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
 
 [Authorize]
 public class TransactionController : Controller
@@ -17,7 +18,7 @@ public class TransactionController : Controller
     // GET: /Transaction/
     public async Task<IActionResult> Index()
     {
-        int userId = int.Parse(User.FindFirst("UserID")?.Value ?? "0");
+        string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
         var transactions = await _transactionService.GetAllAsync(userId);
         return View(transactions);
     }
@@ -35,11 +36,10 @@ public class TransactionController : Controller
     {
         if (ModelState.IsValid)
         {
-            transaction.UserID = int.Parse(User.FindFirst("UserID")?.Value ?? "0");
+            transaction.UserID = User.FindFirstValue(ClaimTypes.NameIdentifier);
             await _transactionService.AddAsync(transaction);
             return RedirectToAction(nameof(Index));
         }
         return View(transaction);
     }
-
 }

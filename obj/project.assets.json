@@ -5133,11 +5133,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\sf401\\Source\\Repos\\YouFinanceIt\\YouFinanceIt.csproj",
+      "projectUniqueName": "C:\\Users\\sf401\\source\\repos\\YouFinanceIt\\YouFinanceIt.csproj",
       "projectName": "YouFinanceIt",
-      "projectPath": "C:\\Users\\sf401\\Source\\Repos\\YouFinanceIt\\YouFinanceIt.csproj",
+      "projectPath": "C:\\Users\\sf401\\source\\repos\\YouFinanceIt\\YouFinanceIt.csproj",
       "packagesPath": "C:\\Users\\sf401\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\sf401\\Source\\Repos\\YouFinanceIt\\obj\\",
+      "outputPath": "C:\\Users\\sf401\\source\\repos\\YouFinanceIt\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"

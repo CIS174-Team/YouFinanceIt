@@ -29,4 +29,16 @@ public class HomeController : Controller
     {
         return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
     }
+
+    // New action for handling status codes like 404
+    public IActionResult StatusCode(int code)
+    {
+        if (code == 404)
+        {
+            return View("NotFound");
+        }
+
+        // You can handle other codes differently or show the error view by default
+        return View("Error", new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+    }
 }

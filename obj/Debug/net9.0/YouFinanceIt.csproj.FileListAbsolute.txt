@@ -492,3 +492,4 @@ C:\Users\sf401\source\repos\YouFinanceIt\obj\Debug\net9.0\refint\YouFinanceIt.dl
 C:\Users\sf401\source\repos\YouFinanceIt\obj\Debug\net9.0\YouFinanceIt.pdb
 C:\Users\sf401\source\repos\YouFinanceIt\obj\Debug\net9.0\YouFinanceIt.genruntimeconfig.cache
 C:\Users\sf401\source\repos\YouFinanceIt\obj\Debug\net9.0\ref\YouFinanceIt.dll
+C:\Users\sf401\source\repos\YouFinanceIt\bin\Debug\net9.0\Microsoft.EntityFrameworkCore.InMemory.dll

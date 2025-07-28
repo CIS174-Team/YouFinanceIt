@@ -1,40 +1,39 @@
-// Program.cs
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using YouFinanceIt.Data; // Your DbContext namespace
-using YouFinanceIt.Models; // Your ApplicationUser namespace
-using YouFinanceIt.Services; // Added for TransactionService
+using YouFinanceIt.Data;
+using YouFinanceIt.Models;
+using YouFinanceIt.Services;
+using YouFinanceIt.Filters;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Configure database connection string
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
+    ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 
-// Add DbContext for your application (including Identity tables)
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(connectionString,
-        sqlServerOptionsAction: sqlOptions =>
+        sqlOptions =>
         {
-            // Enable retry on failure for transient errors (common with Azure SQL Database)
             sqlOptions.EnableRetryOnFailure(
-                maxRetryCount: 5, // Number of retries
-                maxRetryDelay: TimeSpan.FromSeconds(30), // Max delay between retries
-                errorNumbersToAdd: null); // SQL error numbers to consider transient (null uses defaults)
+                maxRetryCount: 5,
+                maxRetryDelay: TimeSpan.FromSeconds(30),
+                errorNumbersToAdd: null);
         }));
 
-// Add Identity services
-builder.Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = false)
+builder.Services.AddDefaultIdentity<ApplicationUser>(options =>
+    options.SignIn.RequireConfirmedAccount = false)
     .AddEntityFrameworkStores<ApplicationDbContext>();
 
-// Register your custom services
+// Register your services
 builder.Services.AddScoped<ITransactionService, TransactionService>();
 
-// Add services to the container.
+// Register the custom filter
+builder.Services.AddScoped<UserIdFilter>();
+
 builder.Services.AddControllersWithViews();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
@@ -43,6 +42,8 @@ if (!app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
+app.UseMiddleware<YouFinanceIt.Middleware.ErrorHandlingMiddleware>();
+app.UseStatusCodePagesWithReExecute("/Home/StatusCode", "?code={0}");
 
 app.UseRouting();
 

@@ -5,8 +5,6 @@ VisualStudioVersion = 17.14.36127.28
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YouFinanceIt", "YouFinanceIt.csproj", "{43719CF6-FFA6-3621-68E0-E982F020EA41}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YouFinanceItTests", "..\YouFinanceItTests\YouFinanceItTests.csproj", "{8750376D-5C5E-4FDE-BCC3-4D0BB3E8C132}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

@@ -1,0 +1,33 @@
+﻿@model IEnumerable<YouFinanceIt.Data.Account>
+
+@{
+    ViewData["Title"] = "Accounts Page";
+}
+
+<h2>Accounts Page</h2>
+
+<div class="account-container">
+    @foreach (var account in Model)
+    {
+        <div class="account-card">
+            <div class="account-header">ACCOUNT CARD @account.AccountID</div>
+            <p><strong>Name:</strong> @account.AccountName</p>
+            <p><strong>Balance:</strong> @account.Balance.ToString("C")</p>
+            <p><strong>Type:</strong> @account.AccountType</p>
+            <p>
+                [<a asp-action="Details" asp-route-id="@account.AccountID">View</a>]
+                [<a asp-action="Edit" asp-route-id="@account.AccountID">Edit</a>]
+                [<a asp-action="Delete" asp-route-id="@account.AccountID">Delete</a>]
+            </p>
+        </div>
+    }
+
+    <p>
+        <a class="btn btn-primary" asp-action="Create">Add New Account</a>
+    </p>
+</div>
+
+<footer>
+    <hr />
+    <p>&copy; 2025 YouFinanceIt | Contact us</p>
+</footer>

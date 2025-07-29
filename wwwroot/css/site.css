@@ -29,3 +29,25 @@ body {
 .form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
   text-align: start;
 }
+
+.account-container {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.account-card {
+    border: 2px solid #444;
+    padding: 20px;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+    font-family: monospace;
+}
+
+.account-header {
+    border-bottom: 1px dashed #999;
+    margin-bottom: 10px;
+    font-weight: bold;
+}

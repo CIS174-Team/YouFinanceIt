@@ -7,8 +7,8 @@ namespace YouFinanceIt.Models // Changed namespace
     public class Account
     {
         public int AccountID { get; set; }
-        [Required]
-        public string UserID { get; set; } // Foreign key to ApplicationUser.Id (string)
+        
+        public string? UserID { get; set; } // Foreign key to ApplicationUser.Id (string)
         [Required]
         public string? AccountName { get; set; }
         [Required]

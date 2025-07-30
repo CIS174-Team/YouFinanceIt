@@ -34,12 +34,17 @@ namespace YouFinanceIt.Controllers
         }
 
         // GET: Transaction/Create
-        public IActionResult Create()
+        public IActionResult Create(int? accountId)
         {
             var userId = GetUserId();
-            ViewData["AccountID"] = new SelectList(_context.Accounts.Where(a => a.UserID == userId), "AccountID", "AccountName");
+            var transaction = new TransactionModel
+            {
+                AccountID = accountId ?? 0 // Pre-fill AccountID if coming from accounts page -John
+            };
+
+            ViewData["AccountID"] = new SelectList(_context.Accounts.Where(a => a.UserID == userId), "AccountID", "AccountName", transaction.AccountID); //added , transaction.AccountID - John
             ViewData["CategoryID"] = new SelectList(_context.Categories.Where(c => c.UserID == userId || c.UserID == null), "CategoryID", "CategoryName");
-            return View();
+            return View(transaction);
         }
 
         // POST: Transaction/Create

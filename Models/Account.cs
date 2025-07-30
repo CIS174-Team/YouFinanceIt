@@ -1,15 +1,24 @@
-using YouFinanceIt.Data;
+// Models/Account.cs
+using YouFinanceIt.Models; // For ApplicationUser and Transaction (if Transaction is in Models namespace)
+using System.ComponentModel.DataAnnotations;
 
-namespace YouFinanceIt.Account;
-public class Account
+namespace YouFinanceIt.Models // Changed namespace
 {
-    public int AccountID { get; set; }
-    public int UserID { get; set; }
-    public string? AccountName { get; set; }
-    public string? AccountType { get; set; }
-    public decimal Balance { get; set; }
-    public DateTime CreatedDate { get; set; }
+    public class Account
+    {
+        public int AccountID { get; set; }
+        [Required]
+        public string UserID { get; set; } // Foreign key to ApplicationUser.Id (string)
+        [Required]
+        public string? AccountName { get; set; }
+        [Required]
+        public string? AccountType { get; set; }
+        [Required]
+        public decimal Balance { get; set; }
+        public DateTime CreatedDate { get; set; } = DateTime.UtcNow;
 
-    public User? User { get; set; }
-    public ICollection<Transaction>? Transactions { get; set; }
+        // Navigation property to ApplicationUser
+        public ApplicationUser? User { get; set; }
+        public ICollection<Transaction>? Transactions { get; set; }
+    }
 }

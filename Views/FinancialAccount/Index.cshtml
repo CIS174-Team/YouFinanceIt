@@ -1,0 +1,52 @@
+﻿@* Views/FinancialAccount/Index.cshtml *@
+@model IEnumerable<YouFinanceIt.Models.Account>
+@* Corrected model type *@
+
+@{
+    ViewData["Title"] = "My Financial Accounts";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container py-5">
+    <h1 class="text-center mb-5 fw-bold text-dark">Your Financial Accounts</h1>
+
+    <div class="row mb-4">
+        <div class="col text-end">
+            <a asp-action="Create" asp-controller="FinancialAccount" class="btn btn-primary">Add New Account</a>
+            @* You'll need to implement a Create action in FinancialAccountController for this *@
+        </div>
+    </div>
+
+    @if (Model != null && Model.Any())
+    {
+        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+            @foreach (var account in Model)
+            {
+                <div class="col">
+                    <div class="card h-100 shadow-sm">
+                        <div class="card-body">
+                            <h5 class="card-title fw-bold text-primary">@account.AccountName</h5>
+                            <h6 class="card-subtitle mb-2 text-muted">@account.AccountType</h6>
+                            <p class="card-text">
+                                Current Balance: <span class="fw-bold text-success">@account.Balance.ToString("C")</span>
+                            </p>
+                            <p class="card-text small text-muted">
+                                Created: @account.CreatedDate.ToShortDateString()
+                            </p>
+                            <div class="d-flex justify-content-between align-items-center mt-3">
+                                <a asp-action="Details" asp-controller="FinancialAccount" asp-route-id="@account.AccountID" class="btn btn-sm btn-outline-primary">View Details</a>
+                                <a asp-action="AddTransaction" asp-controller="Transaction" asp-route-accountId="@account.AccountID" class="btn btn-sm btn-outline-secondary">Add Transaction</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-info text-center" role="alert">
+            You don't have any accounts yet. Click "Add New Account" to get started!
+        </div>
+    }
+</div>

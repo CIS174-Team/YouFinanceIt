@@ -2,6 +2,7 @@
 using YouFinanceIt.Data;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using YouFinanceIt.Models;
 
 namespace YouFinanceIt.Services
 {
@@ -14,14 +15,14 @@ namespace YouFinanceIt.Services
             _context = context;
         }
 
-        public async Task<List<Transaction>> GetAllAsync(int userId)
+        public async Task<List<Transaction>> GetAllAsync(string userId)
         {
             return await _context.Transactions
                 .Where(t => t.UserID == userId)
                 .ToListAsync();
         }
 
-        public async Task<Transaction?> GetByIdAsync(int id, int userId)
+        public async Task<Transaction?> GetByIdAsync(int id, string userId)
         {
             return await _context.Transactions
                 .FirstOrDefaultAsync(t => t.TransactionID == id && t.UserID == userId);
@@ -43,7 +44,7 @@ namespace YouFinanceIt.Services
             }
         }
 
-        public async Task DeleteAsync(int id, int userId)
+        public async Task DeleteAsync(int id, string userId)
         {
             var transaction = await _context.Transactions
                 .FirstOrDefaultAsync(t => t.TransactionID == id && t.UserID == userId);

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using YouFinanceIt.Models;
 
+
 namespace YouFinanceIt.Services
 {
     public class TransactionService : ITransactionService
@@ -28,13 +29,13 @@ namespace YouFinanceIt.Services
                 .FirstOrDefaultAsync(t => t.TransactionID == id && t.UserID == userId);
         }
 
-        public async Task AddAsync(TransactionModel transaction)
+        public async Task AddAsync(Transaction transaction)
         {
             _context.Transactions.Add(transaction);
             await _context.SaveChangesAsync();
         }
 
-        public async Task UpdateAsync(TransactionModel transaction)
+        public async Task UpdateAsync(Transaction transaction)
         {
             var existing = await _context.Transactions.FindAsync(transaction.TransactionID);
             if (existing is not null && existing.UserID == transaction.UserID)

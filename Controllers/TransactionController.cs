@@ -1,10 +1,12 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿// Controllers/TransactionController.cs
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Security.Claims;
 using YouFinanceIt.Data;
 using YouFinanceIt.Services;
-using TransactionModel = YouFinanceIt.Data.Transaction;
+using YouFinanceIt.Models; // Ensure this is present for Transaction model
+using TransactionModel = YouFinanceIt.Models.Transaction; // Alias for clarity
 
 namespace YouFinanceIt.Controllers
 {
@@ -45,10 +47,12 @@ namespace YouFinanceIt.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(TransactionModel transaction)
         {
+            // Ensure the UserID is set from the authenticated user
+            transaction.UserID = GetUserId();
+
             if (ModelState.IsValid)
             {
-                transaction.UserID = GetUserId();
-                transaction.CreatedDate = DateTime.Now;
+                transaction.CreatedDate = DateTime.UtcNow; // Set CreatedDate here
                 await _transactionService.AddAsync(transaction);
                 return RedirectToAction(nameof(Index));
             }
@@ -84,9 +88,11 @@ namespace YouFinanceIt.Controllers
                 return NotFound();
             }
 
+            // Ensure the UserID is set from the authenticated user
+            transaction.UserID = GetUserId();
+
             if (ModelState.IsValid)
             {
-                transaction.UserID = GetUserId();
                 await _transactionService.UpdateAsync(transaction);
                 return RedirectToAction(nameof(Index));
             }

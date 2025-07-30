@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using YouFinanceIt.Data;
 using YouFinanceIt.Models;
 using YouFinanceIt.Services;
-using YouFinanceIt.Filters;
+using YouFinanceIt.Filters; // Added for UserIdFilter
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -27,7 +27,7 @@ builder.Services.AddDefaultIdentity<ApplicationUser>(options =>
 // Register your services
 builder.Services.AddScoped<ITransactionService, TransactionService>();
 
-// Register the custom filter
+// Register the custom UserIdFilter as a scoped service
 builder.Services.AddScoped<UserIdFilter>();
 
 builder.Services.AddControllersWithViews();
@@ -54,44 +54,46 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Account}/{action=Login}/{id?}");
 
-// Seed test data before app starts
+// Seed test data before app starts (still commented out, but updated for ApplicationUser)
 //using (var scope = app.Services.CreateScope())
 //{
 //    var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+//    var userManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
 
-//    if (!db.Users.Any())
+//    if (!db.Users.Any()) // This check might need adjustment if Identity tables are empty but not your custom ones
 //    {
-//        var user = new User
+//        var user = new ApplicationUser // Use ApplicationUser
 //        {
-//            Username = "testuser",
+//            UserName = "testuser",
 //            Email = "testuser@example.com",
-//            PasswordHash = "hashed_password_here",
-//            CreatedDate = DateTime.Now
+//            CreatedDate = DateTime.UtcNow // Use UTC time
 //        };
 
-//        db.Users.Add(user);
-//        db.SaveChanges();
+//        var result = await userManager.CreateAsync(user, "TestPassword123!"); // Create user with password
 
-//        var checking = new Account
+//        if (result.Succeeded)
 //        {
-//            UserID = user.UserID,
-//            AccountName = "Main Checking",
-//            AccountType = "Checking",
-//            Balance = 5432.10m,
-//            CreatedDate = DateTime.Now
-//        };
+//            var checking = new YouFinanceIt.Models.Account // Use correct Account model from Models namespace
+//            {
+//                UserID = user.Id, // Use string Id from ApplicationUser
+//                AccountName = "Main Checking",
+//                AccountType = "Checking",
+//                Balance = 5432.10m,
+//                CreatedDate = DateTime.UtcNow
+//            };
 
-//        var savings = new Account
-//        {
-//            UserID = user.UserID,
-//            AccountName = "Emergency Savings",
-//            AccountType = "Savings",
-//            Balance = 8500.00m,
-//            CreatedDate = DateTime.Now
-//        };
+//            var savings = new YouFinanceIt.Models.Account // Use correct Account model from Models namespace
+//            {
+//                UserID = user.Id, // Use string Id from ApplicationUser
+//                AccountName = "Emergency Savings",
+//                AccountType = "Savings",
+//                Balance = 8500.00m,
+//                CreatedDate = DateTime.UtcNow
+//            };
 
-//        db.Accounts.AddRange(checking, savings);
-//        db.SaveChanges();
+//            db.Accounts.AddRange(checking, savings);
+//            await db.SaveChangesAsync(); // Use async SaveChanges
+//        }
 //    }
 //}
 

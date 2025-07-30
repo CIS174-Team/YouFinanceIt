@@ -2,8 +2,8 @@
 using YouFinanceIt.Data;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using System.Linq;
-using TransactionModel = YouFinanceIt.Data.Transaction;
+using YouFinanceIt.Models;
+
 
 namespace YouFinanceIt.Services
 {
@@ -16,26 +16,26 @@ namespace YouFinanceIt.Services
             _context = context;
         }
 
-        public async Task<List<TransactionModel>> GetAllAsync(string userId)
+        public async Task<List<Transaction>> GetAllAsync(string userId)
         {
             return await _context.Transactions
                 .Where(t => t.UserID == userId)
                 .ToListAsync();
         }
 
-        public async Task<TransactionModel?> GetByIdAsync(int id, string userId)
+        public async Task<Transaction?> GetByIdAsync(int id, string userId)
         {
             return await _context.Transactions
                 .FirstOrDefaultAsync(t => t.TransactionID == id && t.UserID == userId);
         }
 
-        public async Task AddAsync(TransactionModel transaction)
+        public async Task AddAsync(Transaction transaction)
         {
             _context.Transactions.Add(transaction);
             await _context.SaveChangesAsync();
         }
 
-        public async Task UpdateAsync(TransactionModel transaction)
+        public async Task UpdateAsync(Transaction transaction)
         {
             var existing = await _context.Transactions.FindAsync(transaction.TransactionID);
             if (existing is not null && existing.UserID == transaction.UserID)

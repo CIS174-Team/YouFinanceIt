@@ -1,33 +1,56 @@
-﻿@model IEnumerable<YouFinanceIt.Data.Account>
+﻿@* Views/FinancialAccount/Index.cshtml *@
+@model IEnumerable<YouFinanceIt.Models.Account>
+@* Corrected model type *@
 
 @{
-    ViewData["Title"] = "Accounts Page";
+    ViewData["Title"] = "My Financial Accounts";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>Accounts Page</h2>
+<div class="container py-5">
+    <h1 class="text-center mb-5 fw-bold text-dark">Your Financial Accounts</h1>
 
-<div class="account-container">
+    <div class="row mb-4">
+        <div class="col text-end">
+            <a asp-action="Create" asp-controller="FinancialAccount" class="btn btn-primary">Add New Account</a>
+            @* You'll need to implement a Create action in FinancialAccountController for this *@
+        </div>
+    </div>
+
+    @if (Model != null && Model.Any())
+    {
+        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
     @foreach (var account in Model)
     {
-        <div class="account-card">
-            <div class="account-header">ACCOUNT CARD @account.AccountID</div>
-            <p><strong>Name:</strong> @account.AccountName</p>
-            <p><strong>Balance:</strong> @account.Balance.ToString("C")</p>
-            <p><strong>Type:</strong> @account.AccountType</p>
-            <p>
-                [<a asp-action="Details" asp-route-id="@account.AccountID">View</a>]
-                [<a asp-action="Edit" asp-route-id="@account.AccountID">Edit</a>]
-                [<a asp-action="Delete" asp-route-id="@account.AccountID">Delete</a>]
+                <div class="col">
+                    <div class="card h-100 shadow-sm">
+                        <div class="card-body">
+                            <h5 class="card-title fw-bold text-primary">@account.AccountName</h5>
+                            <h6 class="card-subtitle mb-2 text-muted">@account.AccountType</h6>
+                            <p class="card-text">
+                                Current Balance: <span class="fw-bold text-success">@account.Balance.ToString("C")</span>
+                            </p>
+                            <p class="card-text small text-muted">
+                                Created: @account.CreatedDate.ToShortDateString()
             </p>
+                            <div class="d-flex justify-content-between align-items-center mt-3">
+                                <a asp-action="Details" asp-controller="FinancialAccount" asp-route-id="@account.AccountID" class="btn btn-sm btn-outline-primary">View Details</a>
+                                <a asp-action="AddTransaction" asp-controller="Transaction" asp-route-accountId="@account.AccountID" class="btn btn-sm btn-outline-secondary">Add Transaction</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-info text-center" role="alert">
+            You don't have any accounts yet. Click "Add New Account" to get started!
         </div>
     }
 
-    <p>
-        <a class="btn btn-primary" asp-action="Create">Add New Account</a>
-    </p>
 </div>
 
 <footer>
-    <hr />
-    <p>&copy; 2025 YouFinanceIt | Contact us</p>
 </footer>

@@ -1,6 +1,8 @@
-﻿using System.Collections.Generic;
+﻿// Services/ITransactionService.cs
+using System.Collections.Generic;
 using System.Threading.Tasks;
-using TransactionModel = YouFinanceIt.Data.Transaction;
+using YouFinanceIt.Models; // Ensure this is present for Transaction model
+using TransactionModel = YouFinanceIt.Models.Transaction; // Alias for clarity
 
 namespace YouFinanceIt.Services
 {

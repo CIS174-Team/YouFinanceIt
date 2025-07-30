@@ -5,6 +5,7 @@ using YouFinanceIt.Data;
 using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
 using YouFinanceIt.Models; // Now includes Account
+using System.Diagnostics;
 
 namespace YouFinanceIt.Controllers
 {
@@ -35,6 +36,38 @@ namespace YouFinanceIt.Controllers
             return View(accounts);
         }
 
-        // REVIEW: Add View/Edit/Delete methods?
+        // GET: FinancialAccount/Create
+        public IActionResult Create()
+        {
+            return View();
+        }
+
+        // POST: FinancialAccount/Create
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create(Account account)
+        {
+            account.UserID = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            account.CreatedDate = DateTime.UtcNow;
+
+            Debug.WriteLine("Create POST called");  //debugging
+            if (ModelState.IsValid)
+            {
+                _context.Add(account);
+                await _context.SaveChangesAsync();
+
+                return RedirectToAction(nameof(Index));
+            }
+            Debug.WriteLine("ModelState invalid:");
+            foreach (var state in ModelState)
+            {
+                foreach (var error in state.Value.Errors)
+                {
+                    Debug.WriteLine($"{state.Key}: {error.ErrorMessage}");
+                }
+            }
+
+            return View(account);
+        }
     }
 }

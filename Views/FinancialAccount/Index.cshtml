@@ -20,8 +20,8 @@
     @if (Model != null && Model.Any())
     {
         <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
-            @foreach (var account in Model)
-            {
+    @foreach (var account in Model)
+    {
                 <div class="col">
                     <div class="card h-100 shadow-sm">
                         <div class="card-body">
@@ -32,7 +32,7 @@
                             </p>
                             <p class="card-text small text-muted">
                                 Created: @account.CreatedDate.ToShortDateString()
-                            </p>
+            </p>
                             <div class="d-flex justify-content-between align-items-center mt-3">
                                 <a asp-action="Details" asp-controller="FinancialAccount" asp-route-id="@account.AccountID" class="btn btn-sm btn-outline-primary">View Details</a>
                                 <a asp-action="AddTransaction" asp-controller="Transaction" asp-route-accountId="@account.AccountID" class="btn btn-sm btn-outline-secondary">Add Transaction</a>
@@ -49,4 +49,13 @@
             You don't have any accounts yet. Click "Add New Account" to get started!
         </div>
     }
+
+    <p>
+        <a class="btn btn-primary" asp-action="Create">Add New Account</a>
+    </p>
 </div>
+
+<footer>
+    <hr />
+    <p>&copy; 2025 YouFinanceIt | Contact us</p>
+</footer>

@@ -1,4 +1,3 @@
-// Program.cs
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using YouFinanceIt.Data;

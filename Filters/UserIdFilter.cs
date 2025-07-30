@@ -24,9 +24,9 @@ namespace YouFinanceIt.Filters
                 // This is an alternative to calling User.FindFirstValue(ClaimTypes.NameIdentifier)
                 // directly inside each action method.
                 if (context.ActionArguments.ContainsKey("userId"))
-                {
-                    context.ActionArguments["userId"] = userId;
-                }
+            {
+                context.ActionArguments["userId"] = userId;
+            }
             }
             else
             {

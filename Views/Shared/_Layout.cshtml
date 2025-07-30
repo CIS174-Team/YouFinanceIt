@@ -28,6 +28,10 @@
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Transaction" asp-action="Index">Transactions</a>
                             </li>
+                            @* Financial Account navigation*@
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="FinancialAccount" asp-action="Index">Accounts</a>
+                            </li>
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Logout">Logout</a>
                             </li>
@@ -41,6 +45,7 @@
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Register">Register</a>
                             </li>
                         }
+                 
                     </ul>
                 </div>
             </div>

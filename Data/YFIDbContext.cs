@@ -1,7 +1,9 @@
 // Data/YFIDbContext.cs
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using YouFinanceIt.Models; // Now includes ApplicationUser, Account, Transaction, Category, Budget
+using System;
+using System.Collections.Generic;
+using YouFinanceIt.Models;
 
 namespace YouFinanceIt.Data
 {
@@ -22,10 +24,9 @@ namespace YouFinanceIt.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            // IMPORTANT: Call the base method for IdentityDbContext to configure Identity tables
-            base.OnModelCreating(modelBuilder);
+            base.OnModelCreating(modelBuilder); // Always call base first for Identity
 
-            // Configure decimal precision
+            // Decimal precision
             modelBuilder.Entity<Account>().Property(a => a.Balance).HasPrecision(18, 2);
             modelBuilder.Entity<Budget>().Property(b => b.Amount).HasPrecision(18, 2);
             modelBuilder.Entity<Transaction>().Property(t => t.Amount).HasPrecision(18, 2);
@@ -66,19 +67,59 @@ namespace YouFinanceIt.Data
                 .HasForeignKey(t => t.AccountID)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            // CORRECTED: 'c' was out of scope here. It should be 't.CategoryID'.
             modelBuilder.Entity<Transaction>()
                 .HasOne(t => t.Category)
                 .WithMany(c => c.Transactions)
-                .HasForeignKey(t => t.CategoryID) // Corrected from c.CategoryID
+                .HasForeignKey(t => t.CategoryID)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            // CORRECTED: 'c' was out of scope here. It should be 'b.CategoryID'.
+            modelBuilder.Entity<Account>()
+                .HasOne(a => a.User)
+                .WithMany(u => u.Accounts)
+                .HasForeignKey(a => a.UserID)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<Budget>()
+                .HasOne(b => b.User)
+                .WithMany(u => u.Budgets)
+                .HasForeignKey(b => b.UserID)
+                .OnDelete(DeleteBehavior.Cascade);
+
             modelBuilder.Entity<Budget>()
                 .HasOne(b => b.Category)
                 .WithMany(c => c.Budgets)
                 .HasForeignKey(b => b.CategoryID) // Corrected from c.CategoryID
                 .OnDelete(DeleteBehavior.Restrict);
         }
+        public ICollection<Transaction> Transactions { get; set; }
+}
+    }
+
+    public class Budget
+    {
+        public int BudgetID { get; set; }
+        public int UserID { get; set; }
+        public int CategoryID { get; set; }
+        public decimal Amount { get; set; }
+        public DateTime StartDate { get; set; }
+        public DateTime EndDate { get; set; }
+
+        public User User { get; set; }
+        public Category Category { get; set; }
+        public ICollection<Transaction> Transactions { get; set; }
+        public ICollection<Budget> Budgets { get; set; }
+    }
+
+    public class Budget
+    {
+        public int BudgetID { get; set; }
+        public int UserID { get; set; }
+        public int CategoryID { get; set; }
+        public decimal Amount { get; set; }
+        public DateTime StartDate { get; set; }
+        public DateTime EndDate { get; set; }
+
+        public User User { get; set; }
+        public Category Category { get; set; }
     }
 }

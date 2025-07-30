@@ -1,12 +1,13 @@
 ﻿// Controllers/AccountController.cs
 using Microsoft.AspNetCore.Mvc;
-using YouFinanceIt.Models; // Now includes Account, ApplicationUser, ViewModels
+using YouFinanceIt.Models; // For ApplicationUser, Account, ViewModels
 using YouFinanceIt.Models.ViewModels;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity; // Required for UserManager and SignInManager
+using Microsoft.AspNetCore.Authentication; // Still needed for SignOutAsync
+using Microsoft.AspNetCore.Authorization; // For [Authorize] attribute
 using YouFinanceIt.Data; // Required for ApplicationDbContext
+using Microsoft.Extensions.Logging; // Added for logging errors
 
 namespace YouFinanceIt.Controllers
 {
@@ -15,12 +16,18 @@ namespace YouFinanceIt.Controllers
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly ApplicationDbContext _context;
+        private readonly ILogger<AccountController> _logger; // Added logger
 
-        public AccountController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, ApplicationDbContext context)
+        public AccountController(
+            UserManager<ApplicationUser> userManager,
+            SignInManager<ApplicationUser> signInManager,
+            ApplicationDbContext context,
+            ILogger<AccountController> logger) // Inject logger
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _context = context;
+            _logger = logger; // Initialize logger
         }
 
         // GET: /Account/Register
@@ -42,24 +49,34 @@ namespace YouFinanceIt.Controllers
 
                 if (result.Succeeded)
                 {
-                    // REQUIREMENT: Do NOT sign in the user immediately after registration.
-                    // Instead, redirect them to the login page.
-
-                    // Optional: Create a default financial account for the new user
-                    var defaultAccount = new Account // Changed from YouFinanceIt.Account.Account
+                    try
                     {
-                        UserID = user.Id, // Link to the newly created Identity user's ID (string)
-                        AccountName = "Primary Checking",
-                        AccountType = "Checking",
-                        Balance = 0.00m,
-                        CreatedDate = DateTime.UtcNow
-                    };
-                    _context.Accounts.Add(defaultAccount);
-                    await _context.SaveChangesAsync(); // Save the new account to the database
+                        // Optional: Create a default financial account for the new user
+                        var defaultAccount = new Account // Account model is now in YouFinanceIt.Models
+                        {
+                            UserID = user.Id, // Link to the newly created Identity user's ID (string)
+                            AccountName = "Primary Checking",
+                            AccountType = "Checking",
+                            Balance = 0.00m,
+                            CreatedDate = DateTime.UtcNow
+                        };
+                        _context.Accounts.Add(defaultAccount);
+                        await _context.SaveChangesAsync(); // Save the new account to the database
 
-                    TempData["SuccessMessage"] = "Registration successful! Please log in with your new account.";
-                    // Redirect to the Login page after successful registration
-                    return RedirectToAction("Login", "Account");
+                        TempData["SuccessMessage"] = "Registration successful! Please log in with your new account.";
+                        // Redirect to the Login page after successful registration
+                        return RedirectToAction("Login", "Account");
+                    }
+                    catch (Exception ex)
+                    {
+                        // Log the exception details
+                        _logger.LogError(ex, "Error creating default account for new user {UserId} - {Email}", user.Id, user.Email);
+                        ModelState.AddModelError(string.Empty, "An error occurred while setting up your account. Please try again or contact support.");
+                        // If there's a database error, don't sign in, just return the view with an error message.
+                        // You might want to delete the partially created user if the account creation is critical.
+                        // For now, we'll just log and display an error.
+                        // await _userManager.DeleteAsync(user); // Uncomment if you want to delete user on account creation failure
+                    }
                 }
 
                 foreach (var error in result.Errors)
@@ -67,6 +84,7 @@ namespace YouFinanceIt.Controllers
                     ModelState.AddModelError(string.Empty, error.Description);
                 }
             }
+            // If model state is not valid or registration failed, return the same view with validation errors
             return View(model);
         }
 
@@ -88,8 +106,8 @@ namespace YouFinanceIt.Controllers
 
                 if (result.Succeeded)
                 {
-                    // REQUIREMENT: Login successful, redirect to the FinancialAccount Index page.
-                    return RedirectToAction("Index", "FinancialAccount");
+                    // Redirect to the new Dashboard Index page after successful login
+                    return RedirectToAction("Index", "Dashboard");
                 }
 
                 if (result.IsLockedOut)

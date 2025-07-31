@@ -46,7 +46,7 @@ namespace YouFinanceIt.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Transaction transaction)
         {
-            transaction.UserID = GetUserId();
+            transaction.UserID = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
             if (string.IsNullOrEmpty(transaction.UserID))
             {
@@ -55,7 +55,7 @@ namespace YouFinanceIt.Controllers
 
             if (!ModelState.IsValid)
             {
-                string userId = GetUserId();
+                var userId = transaction.UserID;
                 ViewBag.AccountID = new SelectList(_context.Accounts.Where(a => a.UserID == userId), "AccountID", "AccountName", transaction.AccountID);
                 return View(transaction);
             }
@@ -64,5 +64,6 @@ namespace YouFinanceIt.Controllers
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
+
     }
 }

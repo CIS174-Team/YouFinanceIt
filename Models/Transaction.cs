@@ -1,6 +1,5 @@
-﻿// Models/Transaction.cs
-using System.ComponentModel.DataAnnotations;
-using YouFinanceIt.Models; // Now includes Account and ApplicationUser
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace YouFinanceIt.Models
 {
@@ -9,13 +8,10 @@ namespace YouFinanceIt.Models
         public int TransactionID { get; set; }
 
         [Required]
-        public string UserID { get; set; } // Foreign key to ApplicationUser.Id (string)
+        public string UserID { get; set; } = string.Empty; // Foreign key to ApplicationUser.Id
 
         [Required]
         public int AccountID { get; set; } // Foreign key to Account
-
-        // [Required]
-        // public int CategoryID { get; set; } // Foreign key to Category
 
         [Required]
         [StringLength(100)]
@@ -29,14 +25,15 @@ namespace YouFinanceIt.Models
         public DateTime TransactionDate { get; set; } = DateTime.UtcNow;
 
         [StringLength(50)]
-        public string? Type { get; set; } // e.g., "Deposit", "Withdrawal", "Transfer"
+        public string? Type { get; set; } // e.g., "Deposit", "Withdrawal"
 
         public DateTime CreatedDate { get; set; } = DateTime.UtcNow;
 
         // Navigation properties
         public ApplicationUser? User { get; set; }
-        public Account? Account { get; set; } // Changed from YouFinanceIt.Account.Account
+        public Account? Account { get; set; }
 
+        // public int? CategoryID { get; set; } // Removed as per request
         // public Category? Category { get; set; }
     }
 }

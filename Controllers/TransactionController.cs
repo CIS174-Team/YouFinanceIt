@@ -1,131 +1,66 @@
-﻿// Controllers/TransactionController.cs
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using System.Security.Claims;
+using Microsoft.EntityFrameworkCore;
 using YouFinanceIt.Data;
-using YouFinanceIt.Services;
 using YouFinanceIt.Models;
-using TransactionModel = YouFinanceIt.Models.Transaction;
+using System.Security.Claims;
 
 namespace YouFinanceIt.Controllers
 {
     [Authorize]
     public class TransactionController : Controller
     {
-        private readonly ITransactionService _transactionService;
         private readonly ApplicationDbContext _context;
 
-        public TransactionController(ITransactionService transactionService, ApplicationDbContext context)
+        public TransactionController(ApplicationDbContext context)
         {
-            _transactionService = transactionService;
             _context = context;
         }
 
-        private string GetUserId() =>
-            User.FindFirstValue(ClaimTypes.NameIdentifier)!;
+        private string GetUserId()
+        {
+            return User.FindFirstValue(ClaimTypes.NameIdentifier);
+        }
 
-        // GET: Transaction
         public async Task<IActionResult> Index()
         {
-            var userId = GetUserId();
-            var transactions = await _transactionService.GetAllAsync(userId);
+            string userId = GetUserId();
+            var transactions = await _context.Transactions
+                .Include(t => t.Account)
+                .Where(t => t.UserID == userId)
+                .ToListAsync();
+
             return View(transactions);
         }
 
-        // GET: Transaction/Create
-        public IActionResult Create(int? accountId)
+        public IActionResult Create()
         {
-            var userId = GetUserId();
-            var transaction = new TransactionModel
-            {
-                AccountID = accountId ?? 0
-            };
-
-            ViewData["AccountID"] = new SelectList(_context.Accounts.Where(a => a.UserID == userId), "AccountID", "AccountName", transaction.AccountID);
-            // ViewData["CategoryID"] = new SelectList(_context.Categories.Where(c => c.UserID == userId || c.UserID == null), "CategoryID", "CategoryName");
-            return View(transaction);
+            string userId = GetUserId();
+            ViewBag.AccountID = new SelectList(_context.Accounts.Where(a => a.UserID == userId), "AccountID", "Name");
+            return View();
         }
 
-        // POST: Transaction/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(TransactionModel transaction)
+        public async Task<IActionResult> Create(Transaction transaction)
         {
-            transaction.UserID = GetUserId();
+            transaction.UserID = GetUserId(); // Set this BEFORE validation
 
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                transaction.CreatedDate = DateTime.UtcNow;
-                await _transactionService.AddAsync(transaction);
-                return RedirectToAction(nameof(Index));
+                // Optional: log errors
+                var errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage);
+                Console.WriteLine(string.Join("; ", errors));
+
+                string userId = GetUserId();
+                ViewBag.AccountID = new SelectList(_context.Accounts.Where(a => a.UserID == userId), "AccountID", "Name", transaction.AccountID);
+                return View(transaction);
             }
 
-            var userId = GetUserId();
-            ViewData["AccountID"] = new SelectList(_context.Accounts.Where(a => a.UserID == userId), "AccountID", "AccountName", transaction.AccountID);
-            // ViewData["CategoryID"] = new SelectList(_context.Categories.Where(c => c.UserID == userId || c.UserID == null), "CategoryID", "CategoryName", transaction.CategoryID);
-            return View(transaction);
-        }
-
-        // GET: Transaction/Edit/5
-        public async Task<IActionResult> Edit(int id)
-        {
-            var userId = GetUserId();
-            var transaction = await _transactionService.GetByIdAsync(id, userId);
-            if (transaction == null)
-            {
-                return NotFound();
-            }
-
-            ViewData["AccountID"] = new SelectList(_context.Accounts.Where(a => a.UserID == userId), "AccountID", "AccountName", transaction.AccountID);
-            // ViewData["CategoryID"] = new SelectList(_context.Categories.Where(c => c.UserID == userId || c.UserID == null), "CategoryID", "CategoryName", transaction.CategoryID);
-            return View(transaction);
-        }
-
-        // POST: Transaction/Edit/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, TransactionModel transaction)
-        {
-            if (id != transaction.TransactionID)
-            {
-                return NotFound();
-            }
-
-            transaction.UserID = GetUserId();
-
-            if (ModelState.IsValid)
-            {
-                await _transactionService.UpdateAsync(transaction);
-                return RedirectToAction(nameof(Index));
-            }
-
-            var userId = GetUserId();
-            ViewData["AccountID"] = new SelectList(_context.Accounts.Where(a => a.UserID == userId), "AccountID", "AccountName", transaction.AccountID);
-            // ViewData["CategoryID"] = new SelectList(_context.Categories.Where(c => c.UserID == userId || c.UserID == null), "CategoryID", "CategoryName", transaction.CategoryID);
-            return View(transaction);
-        }
-
-        // GET: Transaction/Delete/5
-        public async Task<IActionResult> Delete(int id)
-        {
-            var userId = GetUserId();
-            var transaction = await _transactionService.GetByIdAsync(id, userId);
-            if (transaction == null)
-            {
-                return NotFound();
-            }
-
-            return View(transaction);
-        }
-
-        // POST: Transaction/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            var userId = GetUserId();
-            await _transactionService.DeleteAsync(id, userId);
+            _context.Add(transaction);
+            await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
     }

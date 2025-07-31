@@ -1,4 +1,5 @@
 ﻿@model YouFinanceIt.Models.Transaction
+
 @{
     ViewData["Title"] = "Create Transaction";
 }
@@ -9,23 +10,44 @@
     <div class="form-group">
         <label asp-for="TransactionDate" class="control-label"></label>
         <input asp-for="TransactionDate" class="form-control" />
+        <span asp-validation-for="TransactionDate" class="text-danger"></span>
     </div>
+
     <div class="form-group">
         <label asp-for="Description" class="control-label"></label>
         <input asp-for="Description" class="form-control" />
+        <span asp-validation-for="Description" class="text-danger"></span>
     </div>
+
     <div class="form-group">
         <label asp-for="Amount" class="control-label"></label>
         <input asp-for="Amount" class="form-control" />
+        <span asp-validation-for="Amount" class="text-danger"></span>
     </div>
+
     <div class="form-group">
         <label asp-for="CategoryID" class="control-label"></label>
-        <input asp-for="CategoryID" class="form-control" />
+        <select asp-for="CategoryID" class="form-control" asp-items="@(ViewData["CategoryID"] as SelectList)">
+            <option value="">-- Select Category --</option>
+        </select>
+        <span asp-validation-for="CategoryID" class="text-danger"></span>
     </div>
+
     <div class="form-group">
         <label asp-for="AccountID" class="control-label"></label>
-        <input asp-for="AccountID" class="form-control" />
+        <select asp-for="AccountID" class="form-control" asp-items="@(ViewData["AccountID"] as SelectList)">
+            <option value="">-- Select Account --</option>
+        </select>
+        <span asp-validation-for="AccountID" class="text-danger"></span>
     </div>
+
     <input type="hidden" asp-for="CreatedDate" value="@DateTime.Now" />
+
     <button type="submit" class="btn btn-primary">Create</button>
 </form>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

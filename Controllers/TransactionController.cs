@@ -33,6 +33,7 @@ namespace YouFinanceIt.Controllers
                 .ToListAsync();
 
             return View(transactions);
+
         }
 
         public IActionResult Create()
@@ -46,7 +47,7 @@ namespace YouFinanceIt.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Transaction transaction)
         {
-            transaction.UserID = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            transaction.UserID = GetUserId();
 
             if (string.IsNullOrEmpty(transaction.UserID))
             {
@@ -59,7 +60,29 @@ namespace YouFinanceIt.Controllers
                 ViewBag.AccountID = new SelectList(_context.Accounts.Where(a => a.UserID == userId), "AccountID", "AccountName", transaction.AccountID);
                 return View(transaction);
             }
+            var account = await _context.Accounts
+    .FirstOrDefaultAsync(a => a.AccountID == transaction.AccountID && a.UserID == transaction.UserID);
+            //Find related account
+            if (account == null)
+            {
+                ModelState.AddModelError("", "Associated account not found.");
+                return View(transaction);
+            }
 
+            // Adjust balance
+            if (transaction.Type == "Income")
+            {
+                account.Balance += transaction.Amount;
+            }
+            else if (transaction.Type == "Expense")
+            {
+                account.Balance -= transaction.Amount;
+            }
+            else
+            {
+                ModelState.AddModelError("Type", "Invalid transaction type.");
+                return View(transaction);
+            }
             _context.Add(transaction);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));

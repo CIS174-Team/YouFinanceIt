@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 
 namespace YouFinanceIt.Models
 {
@@ -9,6 +10,7 @@ namespace YouFinanceIt.Models
         public int TransactionID { get; set; }
 
         [BindNever] // Prevent binding from form POST
+        [ValidateNever]
         public string UserID { get; set; } = null!;  // Removed [Required]
 
         [Required]

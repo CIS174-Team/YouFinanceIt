@@ -8,9 +8,8 @@ namespace YouFinanceIt.Models
     {
         public int TransactionID { get; set; }
 
-        [Required]
-        [BindNever] // Prevent binding UserID from form data
-        public string UserID { get; set; }
+        [BindNever] // Prevent binding from form POST
+        public string UserID { get; set; } = null!;  // Removed [Required]
 
         [Required]
         public int AccountID { get; set; }
@@ -27,11 +26,10 @@ namespace YouFinanceIt.Models
         public DateTime TransactionDate { get; set; } = DateTime.UtcNow;
 
         [StringLength(50)]
-        public string? Type { get; set; } // e.g., "Income", "Expense"
+        public string? Type { get; set; }
 
         public DateTime CreatedDate { get; set; } = DateTime.UtcNow;
 
-        // Navigation properties
         public ApplicationUser? User { get; set; }
         public Account? Account { get; set; }
     }

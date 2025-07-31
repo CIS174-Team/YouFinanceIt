@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 using YouFinanceIt.Data;
 using YouFinanceIt.Models;
+using System.Linq;
 
 namespace YouFinanceIt.Controllers
 {
@@ -18,7 +19,10 @@ namespace YouFinanceIt.Controllers
             _context = context;
         }
 
-        private string GetUserId() => User.FindFirstValue(ClaimTypes.NameIdentifier);
+        private string GetUserId()
+        {
+            return User.FindFirstValue(ClaimTypes.NameIdentifier);
+        }
 
         public async Task<IActionResult> Index()
         {
@@ -42,8 +46,12 @@ namespace YouFinanceIt.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Transaction transaction)
         {
-            // Set UserID before validating model state
             transaction.UserID = GetUserId();
+
+            if (string.IsNullOrEmpty(transaction.UserID))
+            {
+                ModelState.AddModelError("", "User must be logged in to create a transaction.");
+            }
 
             if (!ModelState.IsValid)
             {

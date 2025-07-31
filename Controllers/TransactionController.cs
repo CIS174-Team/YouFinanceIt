@@ -2,12 +2,9 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 using YouFinanceIt.Data;
 using YouFinanceIt.Models;
-using System.Security.Claims;
-using System.Linq;
-using System.Threading.Tasks;
-using System;
 
 namespace YouFinanceIt.Controllers
 {
@@ -21,12 +18,8 @@ namespace YouFinanceIt.Controllers
             _context = context;
         }
 
-        private string GetUserId()
-        {
-            return User.FindFirstValue(ClaimTypes.NameIdentifier);
-        }
+        private string GetUserId() => User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-        // GET: Transaction
         public async Task<IActionResult> Index()
         {
             string userId = GetUserId();
@@ -38,26 +31,22 @@ namespace YouFinanceIt.Controllers
             return View(transactions);
         }
 
-        // GET: Transaction/Create
         public IActionResult Create()
         {
             string userId = GetUserId();
             ViewBag.AccountID = new SelectList(_context.Accounts.Where(a => a.UserID == userId), "AccountID", "AccountName");
-            return View(new Transaction());  // Pass new model instance to avoid null errors
+            return View();
         }
 
-        // POST: Transaction/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Transaction transaction)
         {
-            transaction.UserID = GetUserId(); // Set before validation
+            // Set UserID before validating model state
+            transaction.UserID = GetUserId();
 
             if (!ModelState.IsValid)
             {
-                var errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage);
-                Console.WriteLine("Validation Errors: " + string.Join("; ", errors));
-
                 string userId = GetUserId();
                 ViewBag.AccountID = new SelectList(_context.Accounts.Where(a => a.UserID == userId), "AccountID", "AccountName", transaction.AccountID);
                 return View(transaction);

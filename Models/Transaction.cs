@@ -1,5 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace YouFinanceIt.Models
 {
@@ -8,10 +9,11 @@ namespace YouFinanceIt.Models
         public int TransactionID { get; set; }
 
         [Required]
-        public string UserID { get; set; } = string.Empty; // Foreign key to ApplicationUser.Id
+        [BindNever] // Prevent binding UserID from form data
+        public string UserID { get; set; }
 
         [Required]
-        public int AccountID { get; set; } // Foreign key to Account
+        public int AccountID { get; set; }
 
         [Required]
         [StringLength(100)]
@@ -25,15 +27,12 @@ namespace YouFinanceIt.Models
         public DateTime TransactionDate { get; set; } = DateTime.UtcNow;
 
         [StringLength(50)]
-        public string? Type { get; set; } // e.g., "Deposit", "Withdrawal"
+        public string? Type { get; set; } // e.g., "Income", "Expense"
 
         public DateTime CreatedDate { get; set; } = DateTime.UtcNow;
 
         // Navigation properties
         public ApplicationUser? User { get; set; }
         public Account? Account { get; set; }
-
-        // public int? CategoryID { get; set; } // Removed as per request
-        // public Category? Category { get; set; }
     }
 }

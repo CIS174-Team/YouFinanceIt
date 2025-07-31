@@ -39,7 +39,7 @@
 
     <div class="mb-3">
         <label asp-for="AccountID" class="form-label"></label>
-        <select asp-for="AccountID" asp-items="@(ViewData["AccountID"] as SelectList)" class="form-select">
+        <select asp-for="AccountID" asp-items="@(ViewBag.AccountID as SelectList)" class="form-select">
             <option value="">-- Select Account --</option>
         </select>
         <span asp-validation-for="AccountID" class="text-danger"></span>

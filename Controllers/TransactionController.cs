@@ -1,11 +1,13 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using YouFinanceIt.Data;
 using YouFinanceIt.Models;
 using System.Security.Claims;
+using System.Linq;
+using System.Threading.Tasks;
+using System;
 
 namespace YouFinanceIt.Controllers
 {
@@ -24,6 +26,7 @@ namespace YouFinanceIt.Controllers
             return User.FindFirstValue(ClaimTypes.NameIdentifier);
         }
 
+        // GET: Transaction
         public async Task<IActionResult> Index()
         {
             string userId = GetUserId();
@@ -35,27 +38,28 @@ namespace YouFinanceIt.Controllers
             return View(transactions);
         }
 
+        // GET: Transaction/Create
         public IActionResult Create()
         {
             string userId = GetUserId();
-            ViewBag.AccountID = new SelectList(_context.Accounts.Where(a => a.UserID == userId), "AccountID", "Name");
-            return View();
+            ViewBag.AccountID = new SelectList(_context.Accounts.Where(a => a.UserID == userId), "AccountID", "AccountName");
+            return View(new Transaction());  // Pass new model instance to avoid null errors
         }
 
+        // POST: Transaction/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Transaction transaction)
         {
-            transaction.UserID = GetUserId(); // Set this BEFORE validation
+            transaction.UserID = GetUserId(); // Set before validation
 
             if (!ModelState.IsValid)
             {
-                // Optional: log errors
                 var errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage);
-                Console.WriteLine(string.Join("; ", errors));
+                Console.WriteLine("Validation Errors: " + string.Join("; ", errors));
 
                 string userId = GetUserId();
-                ViewBag.AccountID = new SelectList(_context.Accounts.Where(a => a.UserID == userId), "AccountID", "Name", transaction.AccountID);
+                ViewBag.AccountID = new SelectList(_context.Accounts.Where(a => a.UserID == userId), "AccountID", "AccountName", transaction.AccountID);
                 return View(transaction);
             }
 

@@ -26,14 +26,6 @@
     </div>
 
     <div class="form-group">
-        <label asp-for="CategoryID" class="control-label"></label>
-        <select asp-for="CategoryID" class="form-control" asp-items="@(ViewData["CategoryID"] as SelectList)">
-            <option value="">-- Select Category --</option>
-        </select>
-        <span asp-validation-for="CategoryID" class="text-danger"></span>
-    </div>
-
-    <div class="form-group">
         <label asp-for="AccountID" class="control-label"></label>
         <select asp-for="AccountID" class="form-control" asp-items="@(ViewData["AccountID"] as SelectList)">
             <option value="">-- Select Account --</option>

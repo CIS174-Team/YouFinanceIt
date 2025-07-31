@@ -7,12 +7,15 @@ namespace YouFinanceIt.Models
     public class Transaction
     {
         public int TransactionID { get; set; }
+
         [Required]
         public string UserID { get; set; } // Foreign key to ApplicationUser.Id (string)
+
         [Required]
         public int AccountID { get; set; } // Foreign key to Account
-        [Required]
-        public int CategoryID { get; set; } // Foreign key to Category
+
+        // [Required]
+        // public int CategoryID { get; set; } // Foreign key to Category
 
         [Required]
         [StringLength(100)]
@@ -33,6 +36,7 @@ namespace YouFinanceIt.Models
         // Navigation properties
         public ApplicationUser? User { get; set; }
         public Account? Account { get; set; } // Changed from YouFinanceIt.Account.Account
-        public Category? Category { get; set; }
+
+        // public Category? Category { get; set; }
     }
 }

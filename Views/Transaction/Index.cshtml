@@ -13,20 +13,20 @@
             <th>Date</th>
             <th>Description</th>
             <th>Amount</th>
-            <th>Category</th>
+            @* <th>Category</th> *@
             <th>Account</th>
         </tr>
     </thead>
     <tbody>
-    @foreach (var t in Model)
-    {
-        <tr>
-            <td>@t.TransactionDate.ToShortDateString()</td>
-            <td>@t.Description</td>
-            <td>@t.Amount.ToString("C")</td>
-            <td>@t.Category?.CategoryName</td>
-            <td>@t.Account?.AccountName</td>
-        </tr>
-    }
+        @foreach (var t in Model)
+        {
+            <tr>
+                <td>@t.TransactionDate.ToShortDateString()</td>
+                <td>@t.Description</td>
+                <td>@t.Amount.ToString("C")</td>
+                @* <td>@t.Category?.CategoryName</td> *@
+                <td>@t.Account?.AccountName</td>
+            </tr>
+        }
     </tbody>
 </table>

@@ -5,8 +5,8 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Security.Claims;
 using YouFinanceIt.Data;
 using YouFinanceIt.Services;
-using YouFinanceIt.Models; // Ensure this is present for Transaction model
-using TransactionModel = YouFinanceIt.Models.Transaction; // Alias for clarity
+using YouFinanceIt.Models;
+using TransactionModel = YouFinanceIt.Models.Transaction;
 
 namespace YouFinanceIt.Controllers
 {
@@ -39,11 +39,11 @@ namespace YouFinanceIt.Controllers
             var userId = GetUserId();
             var transaction = new TransactionModel
             {
-                AccountID = accountId ?? 0 // Pre-fill AccountID if coming from accounts page -John
+                AccountID = accountId ?? 0
             };
 
-            ViewData["AccountID"] = new SelectList(_context.Accounts.Where(a => a.UserID == userId), "AccountID", "AccountName", transaction.AccountID); //added , transaction.AccountID - John
-            ViewData["CategoryID"] = new SelectList(_context.Categories.Where(c => c.UserID == userId || c.UserID == null), "CategoryID", "CategoryName");
+            ViewData["AccountID"] = new SelectList(_context.Accounts.Where(a => a.UserID == userId), "AccountID", "AccountName", transaction.AccountID);
+            // ViewData["CategoryID"] = new SelectList(_context.Categories.Where(c => c.UserID == userId || c.UserID == null), "CategoryID", "CategoryName");
             return View(transaction);
         }
 
@@ -52,19 +52,18 @@ namespace YouFinanceIt.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(TransactionModel transaction)
         {
-            // Ensure the UserID is set from the authenticated user
             transaction.UserID = GetUserId();
 
             if (ModelState.IsValid)
             {
-                transaction.CreatedDate = DateTime.UtcNow; // Set CreatedDate here
+                transaction.CreatedDate = DateTime.UtcNow;
                 await _transactionService.AddAsync(transaction);
                 return RedirectToAction(nameof(Index));
             }
 
             var userId = GetUserId();
             ViewData["AccountID"] = new SelectList(_context.Accounts.Where(a => a.UserID == userId), "AccountID", "AccountName", transaction.AccountID);
-            ViewData["CategoryID"] = new SelectList(_context.Categories.Where(c => c.UserID == userId || c.UserID == null), "CategoryID", "CategoryName", transaction.CategoryID);
+            // ViewData["CategoryID"] = new SelectList(_context.Categories.Where(c => c.UserID == userId || c.UserID == null), "CategoryID", "CategoryName", transaction.CategoryID);
             return View(transaction);
         }
 
@@ -79,7 +78,7 @@ namespace YouFinanceIt.Controllers
             }
 
             ViewData["AccountID"] = new SelectList(_context.Accounts.Where(a => a.UserID == userId), "AccountID", "AccountName", transaction.AccountID);
-            ViewData["CategoryID"] = new SelectList(_context.Categories.Where(c => c.UserID == userId || c.UserID == null), "CategoryID", "CategoryName", transaction.CategoryID);
+            // ViewData["CategoryID"] = new SelectList(_context.Categories.Where(c => c.UserID == userId || c.UserID == null), "CategoryID", "CategoryName", transaction.CategoryID);
             return View(transaction);
         }
 
@@ -93,7 +92,6 @@ namespace YouFinanceIt.Controllers
                 return NotFound();
             }
 
-            // Ensure the UserID is set from the authenticated user
             transaction.UserID = GetUserId();
 
             if (ModelState.IsValid)
@@ -104,7 +102,7 @@ namespace YouFinanceIt.Controllers
 
             var userId = GetUserId();
             ViewData["AccountID"] = new SelectList(_context.Accounts.Where(a => a.UserID == userId), "AccountID", "AccountName", transaction.AccountID);
-            ViewData["CategoryID"] = new SelectList(_context.Categories.Where(c => c.UserID == userId || c.UserID == null), "CategoryID", "CategoryName", transaction.CategoryID);
+            // ViewData["CategoryID"] = new SelectList(_context.Categories.Where(c => c.UserID == userId || c.UserID == null), "CategoryID", "CategoryName", transaction.CategoryID);
             return View(transaction);
         }
 
